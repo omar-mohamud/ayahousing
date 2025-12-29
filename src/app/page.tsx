@@ -4,22 +4,22 @@ export default function Home() {
   return (
     <div className="w-full bg-white">
       {/* 1. Hero Section - Two Column Layout */}
-      <section id="home" className="py-16 lg:py-24 px-4 sm:px-6 lg:px-8 bg-white animate-fade-in-up">
+      <section id="home" className="py-12 sm:py-16 lg:py-24 px-4 sm:px-6 lg:px-8 bg-white animate-fade-in-up">
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           {/* Left Side - Content */}
           <div className="space-y-6 animate-slide-in-left">
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight" style={{ color: 'var(--brand)' }}>
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight" style={{ color: 'var(--brand)' }}>
               Aya Housing & Property Management
             </h1>
-            <h2 className="text-xl sm:text-2xl text-zinc-700 font-medium">
+            <h2 className="text-lg sm:text-xl md:text-2xl text-zinc-700 font-medium">
               Reliable, Structured, Hassle-free Property Support
             </h2>
-            <p className="text-lg text-zinc-600 leading-relaxed">
+            <p className="text-base sm:text-lg text-zinc-600 leading-relaxed">
               Aya Housing provides dependable property management services for residential and commercial buildings. We offer both full service management and stand-alone operational support, ensuring properties remain clean, safe, functional and well-maintained through trained staff and routine oversight.
             </p>
             <a 
               href="#contact" 
-              className="inline-block text-white px-8 py-3 rounded-md font-semibold hover:opacity-90 hover:scale-105 transition-all duration-300 shadow-lg hover:shadow-xl"
+              className="inline-block text-white px-8 py-4 sm:py-3 rounded-md font-semibold hover:opacity-90 hover:scale-105 active:scale-95 transition-all duration-300 shadow-lg hover:shadow-xl text-base sm:text-lg touch-manipulation min-h-[44px] flex items-center justify-center"
               style={{ backgroundColor: 'var(--brand)' }}
             >
               Reach Out Today
@@ -43,7 +43,7 @@ export default function Home() {
       </section>
 
       {/* 2. Why Choose Aya Housing - Full Width Blue Background */}
-      <section id="why-choose-us" className="py-16 lg:py-24 px-4 sm:px-6 lg:px-8 animate-fade-in-up" style={{ backgroundColor: 'var(--brand)' }}>
+      <section id="why-choose-us" className="py-12 sm:py-16 lg:py-24 px-4 sm:px-6 lg:px-8 animate-fade-in-up" style={{ backgroundColor: 'var(--brand)' }}>
         <div className="max-w-6xl mx-auto">
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white text-center mb-12 animate-fade-in">
             Why Choose Aya Housing?
@@ -91,7 +91,7 @@ export default function Home() {
       </section>
 
       {/* 3. Your Property Partner Section - Two Column Layout */}
-      <section id="property-partner" className="py-16 lg:py-24 px-4 sm:px-6 lg:px-8 bg-white animate-fade-in-up">
+      <section id="property-partner" className="py-12 sm:py-16 lg:py-24 px-4 sm:px-6 lg:px-8 bg-white animate-fade-in-up">
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           {/* Left Side - Image */}
           <div className="relative w-full aspect-video rounded-lg overflow-hidden group animate-slide-in-left">
@@ -145,7 +145,7 @@ export default function Home() {
       </section>
 
       {/* 4. Services Overview - Two Column Layout with 4 Cards */}
-      <section id="services" className="py-16 lg:py-24 px-4 sm:px-6 lg:px-8 bg-white animate-fade-in-up">
+      <section id="services" className="py-12 sm:py-16 lg:py-24 px-4 sm:px-6 lg:px-8 bg-white animate-fade-in-up">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-3xl sm:text-4xl font-bold text-center mb-16 animate-fade-in" style={{ color: 'var(--brand)' }}>
             Our Services
@@ -153,7 +153,7 @@ export default function Home() {
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {/* Full Property Management Card */}
-            <div className="bg-white border border-zinc-200 rounded-lg p-8 shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-300">
+            <div className="bg-white border border-zinc-200 rounded-lg p-6 sm:p-8 shadow-sm hover:shadow-xl hover:-translate-y-2 active:translate-y-0 transition-all duration-300 touch-manipulation">
               <div className="relative w-full aspect-video mb-6 rounded-lg overflow-hidden group">
                 <Image
                   src="/property_management.webp"
@@ -340,9 +340,9 @@ export default function Home() {
       </section>
 
       {/* 5. Contact Section - Blue Background Card with Image */}
-      <section id="contact" className="py-16 lg:py-24 px-4 sm:px-6 lg:px-8 bg-white animate-fade-in-up">
+      <section id="contact" className="py-12 sm:py-16 lg:py-24 px-4 sm:px-6 lg:px-8 bg-white animate-fade-in-up">
         <div className="max-w-7xl mx-auto">
-          <div className="rounded-lg p-12 text-white grid grid-cols-1 lg:grid-cols-2 gap-16 items-center" style={{ backgroundColor: 'var(--brand)' }}>
+          <div className="rounded-lg p-6 sm:p-8 lg:p-12 text-white grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-12 lg:gap-16 items-center" style={{ backgroundColor: 'var(--brand)' }}>
             {/* Left Side - Contact Info */}
             <div className="animate-slide-in-left">
               <h2 className="text-3xl sm:text-4xl font-bold mb-8 text-white">Get In Touch</h2>
@@ -366,7 +366,7 @@ export default function Home() {
                   </div>
                   <a
                     href="tel:+252619397197"
-                    className="inline-block w-full bg-purple-500 hover:bg-purple-600 text-white px-6 py-3 rounded-md font-semibold text-center transition-colors duration-300"
+                    className="inline-flex w-full items-center justify-center bg-purple-500 hover:bg-purple-600 active:bg-purple-700 text-white px-6 py-4 sm:py-3 rounded-md font-semibold text-center transition-colors duration-300 touch-manipulation text-base sm:text-lg min-h-[44px]"
                   >
                     Call Now
                   </a>
@@ -390,7 +390,7 @@ export default function Home() {
                     href="https://wa.me/252619397197?text=Hello,%20I%20would%20like%20to%20get%20in%20touch%20with%20Aya%20Housing%20%26%20Property%20Management."
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-block w-full bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-md font-semibold text-center transition-colors duration-300"
+                    className="inline-flex w-full items-center justify-center bg-green-500 hover:bg-green-600 active:bg-green-700 text-white px-6 py-4 sm:py-3 rounded-md font-semibold text-center transition-colors duration-300 touch-manipulation text-base sm:text-lg min-h-[44px]"
                   >
                     Message on WhatsApp
                   </a>
@@ -412,7 +412,7 @@ export default function Home() {
                   </div>
                   <a
                     href="mailto:AyaHousing@outlook.com?subject=Inquiry%20from%20Aya%20Housing%20Website&body=Hello,%0D%0A%0D%0AI%20would%20like%20to%20get%20in%20touch%20with%20Aya%20Housing%20%26%20Property%20Management.%0D%0A%0D%0AThank%20you."
-                    className="inline-block w-full bg-blue-500 hover:bg-blue-600 text-white px-6 py-3 rounded-md font-semibold text-center transition-colors duration-300"
+                    className="inline-flex w-full items-center justify-center bg-blue-500 hover:bg-blue-600 active:bg-blue-700 text-white px-6 py-4 sm:py-3 rounded-md font-semibold text-center transition-colors duration-300 touch-manipulation text-base sm:text-lg min-h-[44px]"
                   >
                     Send Email
                   </a>
@@ -422,7 +422,7 @@ export default function Home() {
             </div>
             
             {/* Right Side - Image */}
-            <div className="relative w-full h-full min-h-[500px] rounded-lg overflow-hidden group animate-slide-in-right">
+            <div className="relative w-full h-full min-h-[300px] sm:min-h-[400px] lg:min-h-[500px] rounded-lg overflow-hidden group animate-slide-in-right">
               <Image
                 src="/hrlady.webp"
                 alt="Professional customer service staff"
