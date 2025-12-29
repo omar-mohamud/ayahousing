@@ -27,11 +27,11 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <header className="border-b border-zinc-200 bg-white sticky top-0 z-50 transition-shadow duration-300 shadow-sm">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-            <a href="#home" className="flex items-center gap-3">
-              <div className="relative w-20 h-20">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <a href="#home" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
+              <div className="relative w-20 h-20 flex-shrink-0">
                 <Image
-                  src="/logo.png"
+                  src="/logo.webp"
                   alt="Aya Housing Logo"
                   fill
                   className="object-contain"
@@ -39,7 +39,7 @@ export default function RootLayout({
                   priority
                 />
               </div>
-              <span className="text-xl font-semibold tracking-tight" style={{ color: 'var(--brand)' }}>Aya Housing</span>
+              <span className="text-lg font-semibold tracking-tight" style={{ color: 'var(--brand)' }}>Aya Housing</span>
             </a>
             <nav className="flex items-center gap-6 text-sm">
               <a href="#home" className="hover:text-[--brand] transition-all duration-300 hover:scale-105">Home</a>
@@ -56,13 +56,13 @@ export default function RootLayout({
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
               <div className="flex flex-col">
                 <div className="flex items-center gap-3 mb-3">
-                  <div className="relative w-16 h-16">
+                  <div className="relative w-24 h-24 flex-shrink-0">
                     <Image
-                      src="/logo.png"
+                      src="/logo.webp"
                       alt="Aya Housing Logo"
                       fill
                       className="object-contain"
-                      sizes="64px"
+                      sizes="96px"
                     />
                   </div>
                   <h3 className="text-lg font-semibold" style={{ color: 'var(--brand)' }}>Aya Housing</h3>
