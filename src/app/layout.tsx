@@ -68,7 +68,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <header className="border-b border-zinc-200 bg-white sticky top-0 z-50 transition-shadow duration-300 shadow-sm supports-[backdrop-filter]:bg-white/80 backdrop-blur-sm">
+        <header className="border-b border-zinc-200 bg-white fixed top-0 left-0 right-0 z-50 transition-shadow duration-300 shadow-sm supports-[backdrop-filter]:bg-white/80 backdrop-blur-sm">
           <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between">
             <a 
               href="#home" 
@@ -110,7 +110,8 @@ export default function RootLayout({
             <MobileMenu />
           </div>
         </header>
-        <main>
+        {/* Offset fixed header height */}
+        <main className="pt-16 sm:pt-20">
           {children}
         </main>
         <footer className="border-t border-zinc-200 bg-white py-12">
