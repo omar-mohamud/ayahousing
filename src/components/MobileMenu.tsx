@@ -7,44 +7,6 @@ export default function MobileMenu() {
   const menuRef = useRef<HTMLDivElement>(null);
   const touchStartX = useRef<number>(0);
   const touchEndX = useRef<number>(0);
-  const scrollYRef = useRef<number>(0);
-
-  useEffect(() => {
-    // Prevent background scroll when menu is open (while allowing menu scrolling)
-    if (isOpen) {
-      scrollYRef.current = window.scrollY || 0;
-      document.body.style.overflow = 'hidden';
-      // iOS-friendly scroll lock without jumping to top
-      document.body.style.position = 'fixed';
-      document.body.style.top = `-${scrollYRef.current}px`;
-      document.body.style.left = '0';
-      document.body.style.right = '0';
-      document.body.style.width = '100%';
-    } else {
-      const top = document.body.style.top;
-      document.body.style.overflow = '';
-      document.body.style.position = '';
-      document.body.style.top = '';
-      document.body.style.left = '';
-      document.body.style.right = '';
-      document.body.style.width = '';
-
-      const y = top ? Math.abs(parseInt(top, 10)) : scrollYRef.current;
-      if (!Number.isNaN(y)) window.scrollTo(0, y);
-    }
-    return () => {
-      const top = document.body.style.top;
-      document.body.style.overflow = '';
-      document.body.style.position = '';
-      document.body.style.top = '';
-      document.body.style.left = '';
-      document.body.style.right = '';
-      document.body.style.width = '';
-
-      const y = top ? Math.abs(parseInt(top, 10)) : scrollYRef.current;
-      if (!Number.isNaN(y)) window.scrollTo(0, y);
-    };
-  }, [isOpen]);
 
   // Handle swipe gestures to close menu
   const handleTouchStart = (e: React.TouchEvent) => {
@@ -116,7 +78,7 @@ export default function MobileMenu() {
       {/* Hamburger Button - Enhanced for mobile */}
       <button
         onClick={toggleMenu}
-        className="lg:hidden flex flex-col gap-1.5 w-10 h-10 justify-center items-center z-[80] relative touch-manipulation active:scale-95 transition-transform"
+        className="lg:hidden flex flex-col gap-1.5 w-10 h-10 justify-center items-center z-50 relative touch-manipulation active:scale-95 transition-transform"
         aria-label={isOpen ? 'Close menu' : 'Open menu'}
         aria-expanded={isOpen}
         aria-controls="mobile-menu"
@@ -140,13 +102,10 @@ export default function MobileMenu() {
 
       {/* Overlay with fade animation */}
       <div
-        className={`fixed inset-0 bg-black/70 backdrop-blur-[2px] z-[70] lg:hidden transition-opacity duration-300 ${
+        className={`fixed left-0 right-0 bottom-0 top-16 sm:top-20 bg-black/60 z-40 lg:hidden transition-opacity duration-300 ${
           isOpen ? 'opacity-100 visible' : 'opacity-0 invisible'
         }`}
         onClick={closeMenu}
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
         aria-hidden="true"
       />
 
@@ -154,7 +113,7 @@ export default function MobileMenu() {
       <nav
         id="mobile-menu"
         ref={menuRef}
-        className={`fixed top-0 right-0 h-full w-72 sm:w-80 bg-white shadow-2xl z-[75] transform transition-transform duration-300 ease-out lg:hidden overflow-y-auto overscroll-contain ${
+        className={`fixed right-0 top-16 sm:top-20 h-[calc(100dvh-4rem)] sm:h-[calc(100dvh-5rem)] w-72 sm:w-80 bg-white shadow-2xl z-50 transform transition-transform duration-300 ease-out lg:hidden overflow-y-auto overscroll-contain ${
           isOpen ? 'translate-x-0 pointer-events-auto' : 'translate-x-full pointer-events-none'
         }`}
         onTouchStart={handleTouchStart}
@@ -162,7 +121,7 @@ export default function MobileMenu() {
         onTouchEnd={handleTouchEnd}
         aria-label="Mobile navigation"
       >
-        <div className="flex flex-col min-h-full pt-24 px-6 pb-8">
+        <div className="flex flex-col min-h-full pt-8 px-6 pb-8">
           {/* Close button inside menu for better UX */}
           <button
             onClick={closeMenu}
