@@ -1,164 +1,115 @@
 'use client';
 
-import { useState, useEffect, useRef, useSyncExternalStore } from 'react';
+import { useEffect, useId, useRef, useState, useSyncExternalStore } from 'react';
 import { createPortal } from 'react-dom';
 
+const subscribeNoop = () => () => {};
+
 export default function MobileMenu() {
-  const [isOpen, setIsOpen] = useState(false);
-  const menuRef = useRef<HTMLDivElement>(null);
-  const touchStartX = useRef<number>(0);
-  const touchEndX = useRef<number>(0);
+  const [open, setOpen] = useState(false);
+  const menuId = useId();
+  const drawerRef = useRef<HTMLElement>(null);
 
   // Hydration-safe "is client" flag (avoids setState-in-effect lint).
-  const isClient = useSyncExternalStore(
-    () => () => {},
-    () => true,
-    () => false
-  );
+  const isClient = useSyncExternalStore(subscribeNoop, () => true, () => false);
 
-  // Handle swipe gestures to close menu
-  const handleTouchStart = (e: React.TouchEvent) => {
-    touchStartX.current = e.touches[0].clientX;
-  };
+  const close = () => setOpen(false);
+  const toggle = () => setOpen((v) => !v);
 
-  const handleTouchMove = (e: React.TouchEvent) => {
-    touchEndX.current = e.touches[0].clientX;
-  };
-
-  const handleTouchEnd = () => {
-    if (!isOpen) return;
-    
-    const swipeDistance = touchStartX.current - touchEndX.current;
-    // If swiped left more than 50px, close menu
-    if (swipeDistance > 50) {
-      setIsOpen(false);
-    }
-  };
-
-  // Close menu on escape key
   useEffect(() => {
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && isOpen) {
-        setIsOpen(false);
-      }
+    if (!open) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') close();
     };
-    window.addEventListener('keydown', handleEscape);
-    return () => window.removeEventListener('keydown', handleEscape);
-  }, [isOpen]);
-
-  // Note: we rely on the overlay click to close the menu.
-  // A document-level "click outside" handler can fire before link clicks on mobile,
-  // causing links to appear "broken" (menu closes but navigation doesn't happen).
-
-  const toggleMenu = () => setIsOpen((v) => !v);
-  const closeMenu = () => setIsOpen(false);
-
-  // Smooth scroll to section and close menu
-  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
-    e.preventDefault();
-    closeMenu();
-    
-    // Small delay to allow menu to close before scrolling
-    setTimeout(() => {
-      const element = document.querySelector(href);
-      if (element) {
-        const headerOffset = 80;
-        const elementPosition = element.getBoundingClientRect().top;
-        const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
-
-        window.scrollTo({
-          top: offsetPosition,
-          behavior: 'smooth',
-        });
-      }
-    }, 100);
-  };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [open]);
 
   return (
     <>
-      {/* Hamburger Button - Enhanced for mobile */}
+      {/* Header toggle button (hamburger -> X) */}
       <button
-        onClick={toggleMenu}
-        className="lg:hidden flex flex-col gap-1.5 w-10 h-10 justify-center items-center z-50 relative touch-manipulation active:scale-95 transition-transform"
-        aria-label={isOpen ? 'Close menu' : 'Open menu'}
-        aria-expanded={isOpen}
-        aria-controls="mobile-menu"
+        type="button"
+        onClick={toggle}
+        className="lg:hidden relative z-50 w-10 h-10 flex items-center justify-center touch-manipulation active:scale-95 transition-transform"
+        aria-label={open ? 'Close menu' : 'Open menu'}
+        aria-expanded={open}
+        aria-controls={menuId}
       >
+        <span className="sr-only">{open ? 'Close menu' : 'Open menu'}</span>
         <span
-          className={`w-6 h-0.5 bg-zinc-900 transition-all duration-300 ease-in-out ${
-            isOpen ? 'rotate-45 translate-y-2' : ''
+          className={`block absolute w-6 h-0.5 bg-zinc-900 transition-transform duration-300 ${
+            open ? 'rotate-45' : '-translate-y-2'
           }`}
         />
         <span
-          className={`w-6 h-0.5 bg-zinc-900 transition-all duration-300 ease-in-out ${
-            isOpen ? 'opacity-0 scale-0' : 'opacity-100 scale-100'
+          className={`block absolute w-6 h-0.5 bg-zinc-900 transition-all duration-300 ${
+            open ? 'opacity-0 scale-0' : 'opacity-100 scale-100'
           }`}
         />
         <span
-          className={`w-6 h-0.5 bg-zinc-900 transition-all duration-300 ease-in-out ${
-            isOpen ? '-rotate-45 -translate-y-2' : ''
+          className={`block absolute w-6 h-0.5 bg-zinc-900 transition-transform duration-300 ${
+            open ? '-rotate-45' : 'translate-y-2'
           }`}
         />
       </button>
 
+      {/* Portal the scrim + drawer to body so they can't be trapped by header stacking contexts */}
       {isClient &&
         createPortal(
           <>
-            {/* Overlay with fade animation (below header) */}
+            {/* Scrim only below the sticky header (h-16 sm:h-20) */}
             <div
-              className={`fixed left-0 right-0 bottom-0 top-16 sm:top-20 bg-black/60 z-30 lg:hidden transition-opacity duration-300 ${
-                isOpen ? 'opacity-100 visible pointer-events-auto' : 'opacity-0 invisible pointer-events-none'
+              className={`fixed left-0 right-0 bottom-0 top-16 sm:top-20 bg-black/60 lg:hidden transition-opacity duration-200 ${
+                open ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
               }`}
-              onClick={closeMenu}
+              style={{ zIndex: 40 }}
+              onClick={close}
               aria-hidden="true"
             />
 
-            {/* Mobile Menu (scrollable) */}
+            {/* Drawer (scrollable) */}
             <nav
-              id="mobile-menu"
-              ref={menuRef}
-              className={`fixed right-0 top-16 sm:top-20 h-[calc(100dvh-4rem)] sm:h-[calc(100dvh-5rem)] w-72 sm:w-80 bg-white shadow-2xl z-40 transform transition-transform duration-300 ease-out lg:hidden overflow-y-auto overscroll-contain ${
-                isOpen ? 'translate-x-0 pointer-events-auto' : 'translate-x-full pointer-events-none'
-              }`}
-              onTouchStart={handleTouchStart}
-              onTouchMove={handleTouchMove}
-              onTouchEnd={handleTouchEnd}
+              id={menuId}
+              ref={drawerRef}
               aria-label="Mobile navigation"
+              className={`fixed right-0 bottom-0 top-16 sm:top-20 lg:hidden w-80 max-w-[85vw] bg-white shadow-2xl transform transition-transform duration-200 ease-out overflow-y-auto overscroll-contain ${
+                open ? 'translate-x-0 pointer-events-auto' : 'translate-x-full pointer-events-none'
+              }`}
+              style={{ zIndex: 45 }}
             >
-              <div className="flex flex-col min-h-full pt-8 px-6 pb-8">
-                {/* Navigation Links */}
-                <a
-                  href="#home"
-                  onClick={(e) => handleNavClick(e, '#home')}
-                  className="py-4 px-4 text-lg font-semibold text-zinc-900 border-b border-zinc-200 transition-all touch-manipulation hover:bg-zinc-50 active:bg-zinc-100 rounded-t-lg -mx-2"
-                  style={{ color: 'var(--brand)' }}
-                >
-                  Home
-                </a>
-                <a
-                  href="#services"
-                  onClick={(e) => handleNavClick(e, '#services')}
-                  className="py-4 px-4 text-lg font-semibold text-zinc-900 border-b border-zinc-200 transition-all touch-manipulation hover:bg-zinc-50 active:bg-zinc-100 -mx-2"
-                  style={{ color: 'var(--brand)' }}
-                >
-                  Services
-                </a>
-                <a
-                  href="#contact"
-                  onClick={(e) => handleNavClick(e, '#contact')}
-                  className="py-4 px-4 text-lg font-semibold text-zinc-900 border-b border-zinc-200 transition-all touch-manipulation hover:bg-zinc-50 active:bg-zinc-100 rounded-b-lg -mx-2"
-                  style={{ color: 'var(--brand)' }}
-                >
-                  Contact
-                </a>
+              <div className="px-6 py-6">
+                <div className="space-y-2">
+                  {/* Use normal anchors (no preventDefault) so navigation always works */}
+                  <a
+                    href="#home"
+                    onClick={close}
+                    className="w-full flex items-center justify-start px-4 py-4 text-lg font-semibold rounded-lg hover:bg-zinc-50 active:bg-zinc-100"
+                    style={{ color: 'var(--brand)' }}
+                  >
+                    Home
+                  </a>
+                  <a
+                    href="#services"
+                    onClick={close}
+                    className="w-full flex items-center justify-start px-4 py-4 text-lg font-semibold rounded-lg hover:bg-zinc-50 active:bg-zinc-100"
+                    style={{ color: 'var(--brand)' }}
+                  >
+                    Services
+                  </a>
+                  <a
+                    href="#contact"
+                    onClick={close}
+                    className="w-full flex items-center justify-start px-4 py-4 text-lg font-semibold rounded-lg hover:bg-zinc-50 active:bg-zinc-100"
+                    style={{ color: 'var(--brand)' }}
+                  >
+                    Contact
+                  </a>
+                </div>
 
-                {/* Additional mobile-friendly info */}
                 <div className="mt-6 pt-6 border-t border-zinc-200">
-                  <div className="space-y-3 text-sm text-zinc-600">
-                    <a
-                      href="tel:+252619397197"
-                      className="flex items-center gap-3 py-2 touch-manipulation hover:opacity-80 transition-opacity"
-                    >
+                  <div className="space-y-3 text-sm text-zinc-700">
+                    <a href="tel:+252619397197" className="flex items-center gap-3 py-2 hover:opacity-80">
                       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path
                           strokeLinecap="round"
@@ -169,10 +120,7 @@ export default function MobileMenu() {
                       </svg>
                       <span>+252 (0) 619397197</span>
                     </a>
-                    <a
-                      href="mailto:AyaHousing@outlook.com"
-                      className="flex items-center gap-3 py-2 touch-manipulation hover:opacity-80 transition-opacity"
-                    >
+                    <a href="mailto:AyaHousing@outlook.com" className="flex items-center gap-3 py-2 hover:opacity-80">
                       <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path
                           strokeLinecap="round"
