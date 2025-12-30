@@ -46,18 +46,11 @@ export default function MobileMenu() {
     return () => window.removeEventListener('keydown', handleEscape);
   }, [isOpen]);
 
-  // Close menu when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      if (isOpen && menuRef.current && !menuRef.current.contains(e.target as Node)) {
-        setIsOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [isOpen]);
+  // Note: we rely on the overlay click to close the menu.
+  // A document-level "click outside" handler can fire before link clicks on mobile,
+  // causing links to appear "broken" (menu closes but navigation doesn't happen).
 
-  const toggleMenu = () => setIsOpen(!isOpen);
+  const toggleMenu = () => setIsOpen((v) => !v);
   const closeMenu = () => setIsOpen(false);
 
   // Smooth scroll to section and close menu
@@ -113,7 +106,7 @@ export default function MobileMenu() {
           <>
             {/* Overlay with fade animation (below header) */}
             <div
-              className={`fixed left-0 right-0 bottom-0 top-16 sm:top-20 bg-black/60 z-40 lg:hidden transition-opacity duration-300 ${
+              className={`fixed left-0 right-0 bottom-0 top-16 sm:top-20 bg-black/60 z-30 lg:hidden transition-opacity duration-300 ${
                 isOpen ? 'opacity-100 visible pointer-events-auto' : 'opacity-0 invisible pointer-events-none'
               }`}
               onClick={closeMenu}
@@ -124,7 +117,7 @@ export default function MobileMenu() {
             <nav
               id="mobile-menu"
               ref={menuRef}
-              className={`fixed right-0 top-16 sm:top-20 h-[calc(100dvh-4rem)] sm:h-[calc(100dvh-5rem)] w-72 sm:w-80 bg-white shadow-2xl z-[45] transform transition-transform duration-300 ease-out lg:hidden overflow-y-auto overscroll-contain ${
+              className={`fixed right-0 top-16 sm:top-20 h-[calc(100dvh-4rem)] sm:h-[calc(100dvh-5rem)] w-72 sm:w-80 bg-white shadow-2xl z-40 transform transition-transform duration-300 ease-out lg:hidden overflow-y-auto overscroll-contain ${
                 isOpen ? 'translate-x-0 pointer-events-auto' : 'translate-x-full pointer-events-none'
               }`}
               onTouchStart={handleTouchStart}
