@@ -110,7 +110,7 @@ export default function Home() {
           <div className="space-y-6 animate-slide-in-right">
             <h2 className="text-3xl sm:text-4xl font-bold" style={{ color: 'var(--brand)' }}>Your Property Partner</h2>
             <p className="text-lg text-zinc-600 leading-relaxed">
-              We offer a range of structured and reliable services tailored to meet your property's operational needs. Our comprehensive approach ensures your property remains well-maintained, secure, and professionally managed.
+              We offer a range of structured and reliable services tailored to meet your property&apos;s operational needs. Our comprehensive approach ensures your property remains well-maintained, secure, and professionally managed.
             </p>
             
             {/* Checklist Style Service List */}
@@ -347,7 +347,7 @@ export default function Home() {
             <div className="animate-slide-in-left">
               <h2 className="text-3xl sm:text-4xl font-bold mb-8 text-white">Get In Touch</h2>
               <p className="text-lg text-white/90 mb-8">
-                We're here to help! Reach out to us via WhatsApp or email, and we'll get back to you as soon as possible.
+                We&apos;re here to help! Reach out to us via WhatsApp or email, and we&apos;ll get back to you as soon as possible.
               </p>
               
               <div className="space-y-6">
