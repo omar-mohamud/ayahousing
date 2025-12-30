@@ -122,16 +122,6 @@ export default function MobileMenu() {
         aria-label="Mobile navigation"
       >
         <div className="flex flex-col min-h-full pt-8 px-6 pb-8">
-          {/* Close button inside menu for better UX */}
-          <button
-            onClick={closeMenu}
-            className="absolute top-6 right-6 w-8 h-8 flex items-center justify-center rounded-full hover:bg-zinc-100 transition-colors touch-manipulation"
-            aria-label="Close menu"
-          >
-            <svg className="w-5 h-5 text-zinc-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
 
           {/* Navigation Links */}
           <a
@@ -160,7 +150,7 @@ export default function MobileMenu() {
           </a>
 
           {/* Additional mobile-friendly info */}
-          <div className="mt-auto pt-8 border-t border-zinc-200">
+          <div className="mt-6 pt-6 border-t border-zinc-200">
             <div className="space-y-3 text-sm text-zinc-600">
               <a
                 href="tel:+252619397197"
