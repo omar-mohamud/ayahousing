@@ -1,12 +1,20 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useSyncExternalStore } from 'react';
+import { createPortal } from 'react-dom';
 
 export default function MobileMenu() {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const touchStartX = useRef<number>(0);
   const touchEndX = useRef<number>(0);
+
+  // Hydration-safe "is client" flag (avoids setState-in-effect lint).
+  const isClient = useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false
+  );
 
   // Handle swipe gestures to close menu
   const handleTouchStart = (e: React.TouchEvent) => {
@@ -100,80 +108,95 @@ export default function MobileMenu() {
         />
       </button>
 
-      {/* Overlay with fade animation */}
-      <div
-        className={`fixed left-0 right-0 bottom-0 top-16 sm:top-20 bg-black/60 z-40 lg:hidden transition-opacity duration-300 ${
-          isOpen ? 'opacity-100 visible' : 'opacity-0 invisible'
-        }`}
-        onClick={closeMenu}
-        aria-hidden="true"
-      />
+      {isClient &&
+        createPortal(
+          <>
+            {/* Overlay with fade animation (below header) */}
+            <div
+              className={`fixed left-0 right-0 bottom-0 top-16 sm:top-20 bg-black/60 z-40 lg:hidden transition-opacity duration-300 ${
+                isOpen ? 'opacity-100 visible pointer-events-auto' : 'opacity-0 invisible pointer-events-none'
+              }`}
+              onClick={closeMenu}
+              aria-hidden="true"
+            />
 
-      {/* Mobile Menu - Enhanced with swipe support */}
-      <nav
-        id="mobile-menu"
-        ref={menuRef}
-        className={`fixed right-0 top-16 sm:top-20 h-[calc(100dvh-4rem)] sm:h-[calc(100dvh-5rem)] w-72 sm:w-80 bg-white shadow-2xl z-50 transform transition-transform duration-300 ease-out lg:hidden overflow-y-auto overscroll-contain ${
-          isOpen ? 'translate-x-0 pointer-events-auto' : 'translate-x-full pointer-events-none'
-        }`}
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
-        aria-label="Mobile navigation"
-      >
-        <div className="flex flex-col min-h-full pt-8 px-6 pb-8">
+            {/* Mobile Menu (scrollable) */}
+            <nav
+              id="mobile-menu"
+              ref={menuRef}
+              className={`fixed right-0 top-16 sm:top-20 h-[calc(100dvh-4rem)] sm:h-[calc(100dvh-5rem)] w-72 sm:w-80 bg-white shadow-2xl z-[45] transform transition-transform duration-300 ease-out lg:hidden overflow-y-auto overscroll-contain ${
+                isOpen ? 'translate-x-0 pointer-events-auto' : 'translate-x-full pointer-events-none'
+              }`}
+              onTouchStart={handleTouchStart}
+              onTouchMove={handleTouchMove}
+              onTouchEnd={handleTouchEnd}
+              aria-label="Mobile navigation"
+            >
+              <div className="flex flex-col min-h-full pt-8 px-6 pb-8">
+                {/* Navigation Links */}
+                <a
+                  href="#home"
+                  onClick={(e) => handleNavClick(e, '#home')}
+                  className="py-4 px-4 text-lg font-semibold text-zinc-900 border-b border-zinc-200 transition-all touch-manipulation hover:bg-zinc-50 active:bg-zinc-100 rounded-t-lg -mx-2"
+                  style={{ color: 'var(--brand)' }}
+                >
+                  Home
+                </a>
+                <a
+                  href="#services"
+                  onClick={(e) => handleNavClick(e, '#services')}
+                  className="py-4 px-4 text-lg font-semibold text-zinc-900 border-b border-zinc-200 transition-all touch-manipulation hover:bg-zinc-50 active:bg-zinc-100 -mx-2"
+                  style={{ color: 'var(--brand)' }}
+                >
+                  Services
+                </a>
+                <a
+                  href="#contact"
+                  onClick={(e) => handleNavClick(e, '#contact')}
+                  className="py-4 px-4 text-lg font-semibold text-zinc-900 border-b border-zinc-200 transition-all touch-manipulation hover:bg-zinc-50 active:bg-zinc-100 rounded-b-lg -mx-2"
+                  style={{ color: 'var(--brand)' }}
+                >
+                  Contact
+                </a>
 
-          {/* Navigation Links */}
-          <a
-            href="#home"
-            onClick={(e) => handleNavClick(e, '#home')}
-            className="py-4 px-4 text-lg font-semibold text-zinc-900 border-b border-zinc-200 transition-all touch-manipulation hover:bg-zinc-50 active:bg-zinc-100 rounded-t-lg -mx-2"
-            style={{ color: 'var(--brand)' }}
-          >
-            Home
-          </a>
-          <a
-            href="#services"
-            onClick={(e) => handleNavClick(e, '#services')}
-            className="py-4 px-4 text-lg font-semibold text-zinc-900 border-b border-zinc-200 transition-all touch-manipulation hover:bg-zinc-50 active:bg-zinc-100 -mx-2"
-            style={{ color: 'var(--brand)' }}
-          >
-            Services
-          </a>
-          <a
-            href="#contact"
-            onClick={(e) => handleNavClick(e, '#contact')}
-            className="py-4 px-4 text-lg font-semibold text-zinc-900 border-b border-zinc-200 transition-all touch-manipulation hover:bg-zinc-50 active:bg-zinc-100 rounded-b-lg -mx-2"
-            style={{ color: 'var(--brand)' }}
-          >
-            Contact
-          </a>
-
-          {/* Additional mobile-friendly info */}
-          <div className="mt-6 pt-6 border-t border-zinc-200">
-            <div className="space-y-3 text-sm text-zinc-600">
-              <a
-                href="tel:+252619397197"
-                className="flex items-center gap-3 py-2 touch-manipulation hover:opacity-80 transition-opacity"
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                </svg>
-                <span>+252 (0) 619397197</span>
-              </a>
-              <a
-                href="mailto:AyaHousing@outlook.com"
-                className="flex items-center gap-3 py-2 touch-manipulation hover:opacity-80 transition-opacity"
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                </svg>
-                <span>AyaHousing@outlook.com</span>
-              </a>
-            </div>
-          </div>
-        </div>
-      </nav>
+                {/* Additional mobile-friendly info */}
+                <div className="mt-6 pt-6 border-t border-zinc-200">
+                  <div className="space-y-3 text-sm text-zinc-600">
+                    <a
+                      href="tel:+252619397197"
+                      className="flex items-center gap-3 py-2 touch-manipulation hover:opacity-80 transition-opacity"
+                    >
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"
+                        />
+                      </svg>
+                      <span>+252 (0) 619397197</span>
+                    </a>
+                    <a
+                      href="mailto:AyaHousing@outlook.com"
+                      className="flex items-center gap-3 py-2 touch-manipulation hover:opacity-80 transition-opacity"
+                    >
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                        />
+                      </svg>
+                      <span>AyaHousing@outlook.com</span>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </nav>
+          </>,
+          document.body
+        )}
     </>
   );
 }
